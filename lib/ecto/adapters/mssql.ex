@@ -2,7 +2,7 @@ defmodule Ecto.Adapters.MSSQL do
   @moduledoc """
   Adapter module for MSSQL.
 
-  It uses `mssqlex` for communicating to the database.
+  It uses `mssqlex_v3` for communicating to the database.
 
   ## Features
 
@@ -96,7 +96,7 @@ defmodule Ecto.Adapters.MSSQL do
   """
 
   # Inherit all behaviour from Ecto.Adapters.SQL
-  use Ecto.Adapters.SQL, :mssqlex
+  use Ecto.Adapters.SQL, :mssqlex_v3
 
   # And provide a custom storage implementation
   @behaviour Ecto.Adapter.Storage
@@ -237,7 +237,7 @@ defmodule Ecto.Adapters.MSSQL do
   ## Helpers
 
   defp run_query(sql, opts) do
-    {:ok, _} = Application.ensure_all_started(:mssqlex)
+    {:ok, _} = Application.ensure_all_started(:mssqlex_v3)
 
     opts =
       opts

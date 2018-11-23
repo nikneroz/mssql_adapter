@@ -1,4 +1,4 @@
-if Code.ensure_loaded?(Mssqlex) do
+if Code.ensure_loaded?(MssqlexV3) do
   defmodule Ecto.Adapters.MSSQL.Connection do
     @moduledoc false
 
@@ -11,28 +11,28 @@ if Code.ensure_loaded?(Mssqlex) do
     def child_spec(opts) do
       opts
       |> Keyword.put_new(:port, @default_port)
-      |> Mssqlex.child_spec()
+      |> MssqlexV3.child_spec()
     end
 
     @impl true
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :unique_violation, constraint: constraint}}),
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :unique_violation, constraint: constraint}}),
       do: [unique: constraint]
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :foreign_key_violation, constraint: constraint}}),
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :foreign_key_violation, constraint: constraint}}),
       do: [foreign_key: constraint]
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :exclusion_violation, constraint: constraint}}),
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :exclusion_violation, constraint: constraint}}),
       do: [exclusion: constraint]
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :check_violation, constraint: constraint}}),
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :check_violation, constraint: constraint}}),
       do: [check: constraint]
 
     # Postgres 9.2 and earlier does not provide the constraint field
     @impl true
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :unique_violation, message: message}}) do
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :unique_violation, message: message}}) do
       case :binary.split(message, " unique constraint ") do
         [_, quoted] -> [unique: strip_quotes(quoted)]
         _ -> []
       end
     end
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :foreign_key_violation, message: message}}) do
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :foreign_key_violation, message: message}}) do
       case :binary.split(message, " foreign key constraint ") do
         [_, quoted] ->
           [quoted | _] = :binary.split(quoted, " on table ")
@@ -41,13 +41,13 @@ if Code.ensure_loaded?(Mssqlex) do
           []
       end
     end
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :exclusion_violation, message: message}}) do
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :exclusion_violation, message: message}}) do
       case :binary.split(message, " exclusion constraint ") do
         [_, quoted] -> [exclusion: strip_quotes(quoted)]
         _ -> []
       end
     end
-    def to_constraints(%Mssqlex.Error{mssql: %{code: :check_violation, message: message}}) do
+    def to_constraints(%MssqlexV3.Error{mssql: %{code: :check_violation, message: message}}) do
       case :binary.split(message, " check constraint ") do
         [_, quoted] -> [check: strip_quotes(quoted)]
         _ -> []
@@ -67,27 +67,27 @@ if Code.ensure_loaded?(Mssqlex) do
 
     @impl true
     def prepare_execute(conn, name, sql, params, opts) do
-      Mssqlex.prepare_execute(conn, name, sql, params, opts)
+      MssqlexV3.prepare_execute(conn, name, sql, params, opts)
     end
 
     @impl true
     def query(conn, sql, params, opts) do
-      Mssqlex.query(conn, sql, params, opts)
+      MssqlexV3.query(conn, sql, params, opts)
     end
 
     @impl true
     def execute(conn, %{ref: ref} = query, params, opts) do
-      case Mssqlex.execute(conn, query, params, opts) do
+      case MssqlexV3.execute(conn, query, params, opts) do
         {:ok, %{ref: ^ref}, result} ->
           {:ok, result}
 
         {:ok, _, _} = ok ->
           ok
 
-        {:error, %Mssqlex.QueryError{} = err} ->
+        {:error, %MssqlexV3.QueryError{} = err} ->
           {:reset, err}
 
-        {:error, %Mssqlex.Error{mssql: %{code: :feature_not_supported}} = err} ->
+        {:error, %MssqlexV3.Error{mssql: %{code: :feature_not_supported}} = err} ->
           {:reset, err}
 
         {:error, _} = error ->
@@ -97,7 +97,7 @@ if Code.ensure_loaded?(Mssqlex) do
 
     @impl true
     def stream(conn, sql, params, opts) do
-      Mssqlex.stream(conn, sql, params, opts)
+      MssqlexV3.stream(conn, sql, params, opts)
     end
 
     alias Ecto.Query.{BooleanExpr, JoinExpr, QueryExpr}
@@ -786,7 +786,7 @@ if Code.ensure_loaded?(Mssqlex) do
       do: error!(nil, "PostgreSQL adapter does not support keyword lists in execute")
 
     @impl true
-    def ddl_logs(%Mssqlex.Result{} = result) do
+    def ddl_logs(%MssqlexV3.Result{} = result) do
       # %{messages: messages} = result
 
       # for message <- messages do
