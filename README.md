@@ -1,19 +1,22 @@
 # MssqlAdapter
 
+[![Hex.pm Version](https://img.shields.io/hexpm/v/mssql_adapter.svg)](https://hex.pm/packages/mssql_adapter)
+[![Hex.pm Downloads](https://img.shields.io/hexpm/dt/mssql_adapter.svg)](https://hex.pm/packages/mssql_adapter)
+
 ## Warning!
 
 This library is not ready! Tests aren't passing and there are no docs!
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `mssql_adapter` to your list of dependencies in `mix.exs`:
+MssqlAdapter requires the [MssqlexV3](https://github.com/nikneroz/mssqlex_v3).
+
+This package is availabe in Hex, the package can be installed
+by adding `mssqlex_v3` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [
-    {:mssql_adapter, "~> 0.1.0"}
-  ]
+  [{:mssql_adapter, "~> 0.1.0"}]
 end
 ```
 
