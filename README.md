@@ -1,6 +1,8 @@
 # MssqlAdapter
 
-**TODO: Add description**
+## Warning!
+
+This library is not ready! Tests aren't passing and there are no docs!
 
 ## Installation
 
